@@ -135,7 +135,7 @@ public_users.get('/author/:author',function (req, res) {
       });
   });
 
-
+/*
 // Task 4: Get all books based on title
 public_users.get('/title/:title', (req, res) => {
     const title = req.params.title.toLowerCase();
@@ -147,6 +147,48 @@ public_users.get('/title/:title', (req, res) => {
         res.status(404).json({ message: "No books found similar to this title" });
     }
 });
+*/
+
+// Task 13: Get all books based on title with Promise
+public_users.get('/title/:title', function (req, res) {
+    const titleParam = req.params.title.toLowerCase(); // Handle case-insensitivity
+  
+    // Create a new promise to handle the search operation
+    const findBookByTitle = new Promise((resolve, reject) => {
+      let bookFound = null;
+  
+      // Iterate through all books
+      for (let isbn in books) {
+        let book = books[isbn];
+  
+        // Check if book title matches
+        if (book.title.toLowerCase() === titleParam) {
+          bookFound = book;
+          break; // exit if book is found
+        }
+      }
+  
+      // Resolve if the book is found
+      if (bookFound) {
+        resolve(bookFound);
+      } else {
+        // Reject if no book is found
+        reject("No books found by this title.");
+      }
+    });
+  
+    // Handle the promise
+    findBookByTitle
+      .then((book) => {
+        // Book found, return it as response
+        return res.status(200).json(book);
+      })
+      .catch((error) => {
+        // No book found, return error message
+        return res.status(404).json({ message: error });
+      });
+  });
+
 
 //  Task 5: Get book review
 public_users.get('/review/:isbn', (req, res) => {
