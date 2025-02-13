@@ -37,7 +37,7 @@ public_users.get('/',function (req, res) {
   .catch((err) => res.status(500).json({ error: "Error fetching books" }));
 });
 
-
+/*
 // Task 2: Get all books details based on ISBN
 public_users.get('/isbn/:isbn', (req, res) => {
     const isbn = req.params.isbn;
@@ -49,6 +49,37 @@ public_users.get('/isbn/:isbn', (req, res) => {
         res.status(404).json({ message: "Book not found" });
     }
 });
+*/
+
+// Task 11: Get all books details based on ISBN with Promise
+public_users.get('/isbn/:isbn', function (req, res) {
+    let isbnParams = req.params.isbn;
+  
+    // Create a new promise
+    const getBookByIsbn = new Promise((resolve, reject) => {
+      // Check if the book exists in the books object
+      let book = books[isbnParams];
+  
+      // If the book is found, resolve the promise
+      if (book) {
+        resolve(book);
+      } else {
+        // If the book is not found, reject the promise
+        reject("Book not found");
+      }
+    });
+  
+    // Handle the promise
+    getBookByIsbn
+      .then((book) => {
+        // Book is found, return it as response
+        return res.status(200).json(book);
+      })
+      .catch((error) => {
+        // Book not found, return error message
+        return res.status(404).json({ message: error });
+      });
+  });  
 
 // Task 3: Get all books details based on Author
 public_users.get('/author/:author', (req, res) => {
