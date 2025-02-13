@@ -42,7 +42,7 @@ regd_users.post("/login", (req, res) => {
         return res.status(401).json({ message: "Invalid username or password" });
     }
 
-    const token = jwt.sign({ username }, "your_secret_key", { expiresIn: '1h' });
+    const token = jwt.sign({ username }, "the_secret_key", { expiresIn: '1h' });
     req.session.token = token;
 
     res.status(200).json({ message: "Login successful", token });
@@ -51,7 +51,7 @@ regd_users.post("/login", (req, res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  return res.status(300).json({message: "Book review -- Yet to be implemented"});
 });
 
 module.exports.authenticated = regd_users;
