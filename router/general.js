@@ -81,6 +81,7 @@ public_users.get('/isbn/:isbn', function (req, res) {
       });
   });  
 
+/*
 // Task 3: Get all books details based on Author
 public_users.get('/author/:author', (req, res) => {
     const author = req.params.author;
@@ -92,6 +93,48 @@ public_users.get('/author/:author', (req, res) => {
         res.status(404).json({ message: "No books found from this author" });
     }
 });
+*/
+
+// Task 12: Get all books details based on Author with Promise
+public_users.get('/author/:author',function (req, res) {
+    let authorName = req.params.author.trim().toLowerCase(); // Handle extra spaces and case-insensitivity
+    let booksByAuthor = []; // Array to store books by the specified author
+  
+    // Check if authorName is empty
+    if (!authorName) {
+      return res.status(400).json({ message: "Author name is required." });
+    }
+  
+    // Create a new promise
+    const getBooksByAuthor = new Promise((resolve, reject) => {
+      // Iterate through all books and check the author's name
+      for (let isbnKey in books) {
+        let book = books[isbnKey];
+  
+        // If the book's author matches the requested author, add it to the results
+        if (book.author.toLowerCase() === authorName) {
+          booksByAuthor.push(book);
+        }
+      }
+  
+      // If books are found, resolve the promise, else reject with an error message
+      if (booksByAuthor.length > 0) {
+        resolve(booksByAuthor);
+      } else {
+        reject("No books found by this author.");
+      }
+    });
+  
+    // Use the promise
+    getBooksByAuthor
+      .then((booksByAuthor) => {
+        return res.status(200).json(booksByAuthor); // Return the books found by the author
+      })
+      .catch((error) => {
+        return res.status(404).json({ message: error }); // Return error message if no books are found
+      });
+  });
+
 
 // Task 4: Get all books based on title
 public_users.get('/title/:title', (req, res) => {
