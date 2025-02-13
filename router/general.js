@@ -1,10 +1,11 @@
 const express = require('express');
+const axios = require('axios');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
-
+// Task 6: register a new user
 public_users.post('/register', (req, res) => {
     const { username, password } = req.body;
 
@@ -21,11 +22,12 @@ public_users.post('/register', (req, res) => {
     res.status(201).json({ message: "User registered successfully" });
 });
 
-// Get the book list available in the shop
+// Task 1: Get the book list available in the shop
 public_users.get("/",function (req, res) {
     res.send(JSON.stringify({books}, null, 4));
 });
 
+// Task 2: Get all books details based on ISBN
 public_users.get('/isbn/:isbn', (req, res) => {
     const isbn = req.params.isbn;
     const book = books[isbn];
@@ -37,6 +39,7 @@ public_users.get('/isbn/:isbn', (req, res) => {
     }
 });
 
+// Task 3: Get all books details based on Author
 public_users.get('/author/:author', (req, res) => {
     const author = req.params.author;
     const filteredBooks = Object.values(books).filter(book => book.author === author);
@@ -48,7 +51,7 @@ public_users.get('/author/:author', (req, res) => {
     }
 });
 
-// Get all books based on title
+// Task 4: Get all books based on title
 public_users.get('/title/:title', (req, res) => {
     const title = req.params.title.toLowerCase();
     const filteredBooks = Object.values(books).filter(book => book.title.toLowerCase().includes(title));
@@ -60,7 +63,7 @@ public_users.get('/title/:title', (req, res) => {
     }
 });
 
-//  Get book review
+//  Task 5: Get book review
 public_users.get('/review/:isbn', (req, res) => {
     const isbn = req.params.isbn;
     const book = books[isbn];
